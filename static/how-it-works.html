@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>How it Works - Twitter Sentiment Analysis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Twitter Sentiment Analysis">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../static/assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 700px;
+      }
+      .container-narrow > hr {
+        margin: 30px 0;
+      }
+
+      /* Main marketing message and sign up button */
+      .jumbotron {
+        margin: 60px 0;
+        text-align: left;
+      }
+      .jumbotron h1 {
+        font-size: 72px;
+        line-height: 1;
+      }
+      .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+      /* Supporting marketing content */
+      .marketing {
+        margin: 60px 0;
+      }
+      .marketing p + h4 {
+        margin-top: 28px;
+      }
+      
+      .masthead{
+        margin-top: 20px;
+
+      }
+    .masthead li{
+        margin-top: 10px;
+
+      }
+      
+      #viztext {
+       }
+    
+    td {
+    text-align:center; 
+    padding:5px;
+    }
+
+    th {
+    text-align:center; 
+    padding:5px;
+    }
+      
+    </style>
+    <link href="../static/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../static/assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../static/assets/twitter_bird_grey.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../static/assets/twitter_bird_grey.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../static/assets/twitter_bird_grey.png">
+    <link rel="apple-touch-icon-precomposed" href="../static/assets/twitter_bird_grey.png">
+    <link rel="shortcut icon" href="../static/assets/twitter_bird_grey.png">
+  
+  	<script src="http://d3js.org/d3.v3.min.js"></script>
+  
+  </head>
+
+  <body>
+  
+      <div class="container-narrow">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="/">Home</a></li>
+          <li class="active"><a href=../static/how-it-works.html">How it Works</a></li>
+        </ul>
+		<img src = "../static/assets/twitter_bird_grey.png" alt = "twitter logo" width="50" height="50"/>      
+      </div>
+      <hr>
+      <div class="jumbotron">
+        <p class="lead">This sentiment analysis tool takes any keyword and uses Twitter's Search API to retrieve the last 100 tweets containing the word. These tweets are then scored and the results visualized to give an overview of the real-time sentiment of the search term queried.
+<br><br>
+At its core, the sentiment of each tweet is determined by scoring each word that makes up a tweet. The score is determined by matching every word against a <a href="http://twittersentiment.s3.amazonaws.com/sentiment3.txt">list of 2477 words</a><sup><font color = "#808080">1</font></sup> that have been given a predetermined score from +5 to -5. See the table below for a subset of this list:
+</p>
+
+<table class="table-striped" align="center">
+  				<thead>
+    				<tr>
+      					<th> Term </th>
+      					<th> Score </th>
+    				</tr>
+  				</thead>
+  			<tbody>
+						<tr>
+      						<td>abhor</td>
+      						<td>-3</td>
+    					</tr>    	
+    					<tr>
+      						<td>dislike</td>
+      						<td>-2</td>
+    					</tr> 
+    					<tr>
+      						<td>like</td>
+      						<td>+2</td>
+    					</tr> 
+    					<tr>
+      						<td>admire</td>
+      						<td>+3</td>
+    					</tr> 			
+  			</tbody>
+			</table>
+<br>
+
+<p class="lead">
+To obtain an even more accurate score, the following four strategies were utilized:
+<br><br>
+<u><b>1. Data cleansing</u></b><br>
+Once tweets were broken down into individual words they were stripped of any punctuation, converted to Unicode lowercase terms and compared against lists of Unicode lowercase terms.
+<br><br>
+<u><b>2. Negation</u></b><br>
+A negation term is one that precedes and negates the meaning of one of the pre-determined scored terms. For example, in the phrase “don’t like” don’t is the negation term. The full list of negation terms used in this tool can be found <a href="http://twittersentiment.s3.amazonaws.com/negation1.txt">here.</a><sup><font color = "#808080">2</font></sup>
+<br><br>
+<u><b>3. Intensifier</u></b><br>
+An intensifier is one that precedes and amplifies the meaning of one of the pre-determined scored terms. For example, in the phrase “really like” really is the intensifier. The full list of intensifiers used in this tool can be found <a href="http://twittersentiment.s3.amazonaws.com/intensifiers.txt">here.</a><sup><font color = "#808080">3</font></sup>
+<br><br>
+The 4 scenarios below showcase how this tool calculates the effect of intensifiers and negation terms on a tweet: 
+<br><br>
+
+Keep in mind that the score for the term "like" is +2.
+<br><br>
+
+<span class="lead label label-important">negator</span> term = -1 * [Score of term]. ex) don't like = -2 <br>
+<span class="lead label label-info">intensifier</span> term = 2 * [Score of term]. ex) really like = +4 <br>
+<span class="lead label label-important">negator</span> <span class="lead label label-info">intensifier</span> term = -0.5 * [Score of term]. ex) don't really like = -1 <br>
+<span class="lead label label-info">intensifier</span> <span class="lead label label-important">negator</span> term = -2 * [Score of term]. ex) really don't like = -4  <br>
+</p>
+<p class="lead">
+<u><b>4. Slang and indicative terms</u></b><br>
+Looking through a random sample of 100,000 tweets from Twitter's Streaming API there were terms that statistically showed prominence for appearing in either positive or negative tweets. These terms along with their mean score were added to the <a href="http://twittersentiment.s3.amazonaws.com/sentiment3.txt">list of scored terms.</a> See the table below for a subset of this list:
+<table class="table-striped" align="center">
+  				<thead>
+    				<tr>
+      					<th> Term </th>
+      					<th> Score </th>
+    				</tr>
+  				</thead>
+  			<tbody>
+						<tr>
+      						<td>luv</td>
+      						<td>+2</td>
+    					</tr>    	
+    					<tr>
+      						<td>hehe</td>
+      						<td>+2</td>
+    					</tr> 
+    					<tr>
+      						<td>:)</td>
+      						<td>+2</td>
+    					</tr> 
+    					<tr>
+      						<td>:(</td>
+      						<td>-2</td>
+    					</tr> 			
+  			</tbody>
+			</table>
+<br>
+</p>
+<p class="lead">
+<b>Future Improvements</b><br>
+In its current version, this tool only analyzes English language tweets. 
+Moreover, the scoring system can be improved in a number of ways ranging from scoring positive or negative phrases vs. individual words, 
+having a multi-dimensional view of sentiment vs. a linear +/- score of sentiment, 
+or having specific sentiment terms or phrases for specific brands or domains (ex: movies) which would be different than other domains. 
+</p>
+
+<p class="lead">
+<b>Technology</b><br>
+This web app was built in python and utilizes the d3 JavaScript library as a way to visualize the results via a pie chart and word clouds. 
+This is an open source project available on <a href="http://github.com/dannylm">GitHub</a>.
+
+</p>
+
+<p class="lead">
+Thank you for your time and I hope your enjoy using this tool.
+</p>
+
+</div>
+
+<hr>
+
+<div class="footer">
+        <p>&copy; Daniel Mathews
+        <font color = "#808080">
+        <br>
+        <br>
+        <sup>1</sup> List of 2477 positive and negative terms  <a href="http://arxiv.org/pdf/1101.0510v1.pdf">"Good Friends, Bad News - Affect and Virality in Twitter"</a>
+        <br>
+        <sup>2</sup> List of negation terms <a href="http://static.googleusercontent.com/external_content/untrusted_dlcp/research.google.com/en//pubs/archive/36744.pdf">"Learning to Classify the Scope of Negation for Improved Sentiment Analysis"</a>
+        <br>
+        <sup>3</sup> List of intensifier terms <a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1138084">"Clearly, Using Intensifiers is Very Bad - Or is it?"</a>
+        <font>
+        </p>
+        
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/assets/js/jquery.js"></script>
+    <script src="../static/assets/js/bootstrap-transition.js"></script>
+    <script src="../static/assets/js/bootstrap-alert.js"></script>
+    <script src="../static/assets/js/bootstrap-modal.js"></script>
+    <script src="../static/assets/js/bootstrap-dropdown.js"></script>
+    <script src="../static/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="../static/assets/js/bootstrap-tab.js"></script>
+    <script src="../static/assets/js/bootstrap-tooltip.js"></script>
+    <script src="../static/assets/js/bootstrap-popover.js"></script>
+    <script src="../static/assets/js/bootstrap-button.js"></script>
+    <script src="../static/assets/js/bootstrap-collapse.js"></script>
+    <script src="../static/assets/js/bootstrap-carousel.js"></script>
+    <script src="../static/assets/js/bootstrap-typeahead.js"></script>
+
+  </body>
+</html>
