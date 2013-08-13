@@ -1,7 +1,7 @@
 twitter-sentiment-analysis-python
 =================================
 
-Tool to determine and visualize sentiment in tweets. Built using python + d3
+Tool to determine and visualize sentiment in tweets. Built using python + d3. <br>
 Make sure to enter in your own twitter access and consumer keys.
 
 =================================
