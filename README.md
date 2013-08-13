@@ -9,11 +9,11 @@ This sentiment analysis tool takes any keyword and uses Twitter's Search API to 
 
 At its core, the sentiment of each tweet is determined by scoring each word that makes up a tweet. The score is determined by matching every word against a [list of 2477 words](twittersentiment.s3.amazonaws.com/sentiment3.txt "Sentiment.txt") that have been given a predetermined score from +5 to -5. See the table below for a subset of this list:
 
-Term	 Score
-abhor 	-3
-dislike	-2
-like  	+2
-admire	+3
+Term	 Score <br>
+abhor 	-3<br>
+dislike	-2<br>
+like  	+2<br>
+admire	+3<br>
 
 To obtain an even more accurate score, the following four strategies were utilized: 
 
@@ -30,19 +30,19 @@ The 4 scenarios below showcase how this tool calculates the effect of intensifie
 
 Keep in mind that the score for the term "like" is +2. 
 
-negator term = -1 * [Score of term]. ex) don't like = -2 
-intensifier term = 2 * [Score of term]. ex) really like = +4 
-negator intensifier term = -0.5 * [Score of term]. ex) don't really like = -1 
-intensifier negator term = -2 * [Score of term]. ex) really don't like = -4 
+negator term = -1 * [Score of term]. ex) don't like = -2 <br>
+intensifier term = 2 * [Score of term]. ex) really like = +4 <br>
+negator intensifier term = -0.5 * [Score of term]. ex) don't really like = -1 <br>
+intensifier negator term = -2 * [Score of term]. ex) really don't like = -4 <br>
 
 4. Slang and indicative terms
 Looking through a random sample of 100,000 tweets from Twitter's Streaming API there were terms that statistically showed prominence for appearing in either positive or negative tweets. These terms along with their mean score were added to the list of scored terms. See the table below for a subset of this list:
 
-Term	 Score
-luv	  +2
-hehe	+2
-:)  	+2
-:(  	-2
+Term	 Score<br>
+luv	  +2<br>
+hehe	+2<br>
+:)  	+2<br>
+:(  	-2<br>
 
 Future Improvements
 In its current version, this tool only analyzes English language tweets. Moreover, the scoring system can be improved in a number of ways ranging from scoring positive or negative phrases vs. individual words, having a multi-dimensional view of sentiment vs. a linear +/- score of sentiment, or having specific sentiment terms or phrases for specific brands or domains (ex: movies) which would be different than other domains.
